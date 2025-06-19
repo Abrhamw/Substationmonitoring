@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card mx-auto" style="max-width: 600px;">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Substation</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" value="{{ substation.name }}" required>
+                <small class="form-text text-muted">Update the substation name</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-control" name="location" value="{{ substation.location }}" required>
+                <small class="form-text text-muted">Update the location</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Voltage Level</label>
+                <input type="text" class="form-control" name="voltage_level" value="{{ substation.voltage_level }}" required>
+                <small class="form-text text-muted">Update the voltage level</small>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('substation_detail', substation_id=substation.id) }}" class="btn btn-outline-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-eep">Update Substation</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

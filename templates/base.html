@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substation Monitoring System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --eep-primary: #00843D;
+            --eep-secondary: #E30613;
+            --eep-light: #F0F7F4;
+            --eep-dark: #1A3C2F;
+            --card-radius: 12px;
+        }
+        
+        body {
+            background-color: var(--eep-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        
+        .eep-header {
+            background: linear-gradient(135deg, var(--eep-primary), var(--eep-dark));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card {
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+            background: linear-gradient(135deg, var(--eep-primary), var(--eep-dark));
+            color: white;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+        
+        .health-gauge {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #e9ecef;
+        }
+        
+        .health-gauge div {
+            height: 100%;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .critical-item {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .status-ok {
+            background: rgba(0, 132, 61, 0.2);
+            color: #00843D;
+        }
+        
+        .status-failed {
+            background: rgba(227, 6, 19, 0.2);
+            color: #E30613;
+        }
+        
+        .health-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            background: #e9ecef;
+        }
+        
+        .equipment-card {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .equipment-card:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .action-btn {
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .critical-table-row {
+            border-left: 4px solid var(--eep-secondary);
+        }
+        
+        .btn-eep {
+            background: var(--eep-primary);
+            color: white;
+            border: none;
+            transition: background 0.3s;
+        }
+        
+        .btn-eep:hover {
+            background: #006b31;
+            color: white;
+        }
+        
+        .btn-eep-danger {
+            background: var(--eep-secondary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-eep-danger:hover {
+            background: #c10711;
+            color: white;
+        }
+        
+        .eep-badge {
+            background: var(--eep-primary);
+            color: white;
+        }
+        
+        footer {
+            background: var(--eep-dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .health-progress {
+            border-radius: 4px;
+            height: 8px;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .health-score {
+                font-size: 2rem;
+            }
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .card {
+                margin-bottom: 1rem;
+            }
+			/* Add this new rule at the end of your style block */
+.tab-content > .tab-pane {
+    color: #000;
+}
+
+/* Or be more specific if needed */
+#switchyard, #controlroom {
+    color: #000;
+}
+
+/* Make sure text elements within cards also maintain black color */
+.card, .card-body, .card-title, .card-text {
+    color: #000;
+}
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark eep-header">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-bolt me-2"></i>Substation Management
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'substations' }}" href="{{ url_for('substations') }}">
+                            <i class="fas fa-indent me-1"></i> Substations
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show mt-3">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <!--div class="col-md-6">
+                    <h5><i class="fas fa-bolt me-2"></i>Substation Management System</h5>
+                    <p class="mb-0">Comprehensive Management for Electrical Substations</p>
+                </div-->
+                <div class="col-md-12 text-center">
+                    <p>Abrham Workie &copy; 2025 | EEP Substations Condition Monitoring System</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const healthGauges = document.querySelectorAll('.health-gauge');
+            healthGauges.forEach(function(gauge) {
+                const score = parseFloat(gauge.dataset.score);
+                const gradient = document.createElement('div');
+                gradient.style.height = '100%';
+                gradient.style.width = score + '%';
+                gradient.style.background = 'linear-gradient(to right, ' +
+                    (score > 70 ? '#28a745' : score > 40 ? '#ffc107' : '#dc3545') + ', ' +
+                    (score > 70 ? '#20c997' : score > 40 ? '#fd7e14' : '#ff6b6b') + ')';
+                gauge.appendChild(gradient);
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card mx-auto" style="max-width: 600px;">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Bay</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Bay Name</label>
+                <input type="text" class="form-control" name="name" value="{{ bay.name }}" required>
+                <small class="form-text text-muted">Update the bay name</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <select class="form-select" name="type" required>
+                    <option value="Transmission" {{ 'selected' if bay.type == 'Transmission' }}>Transmission</option>
+                    <option value="Distribution" {{ 'selected' if bay.type == 'Distribution' }}>Distribution</option>
+                    <option value="Transformer" {{ 'selected' if bay.type == 'Transformer' }}>Transformer</option>
+                    <option value="Feeder" {{ 'selected' if bay.type == 'Feeder' }}>Feeder</option>
+                </select>
+                <small class="form-text text-muted">Select the bay type</small>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('substation_detail', substation_id=substation_id) }}" class="btn btn-outline-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-eep">Update Bay</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

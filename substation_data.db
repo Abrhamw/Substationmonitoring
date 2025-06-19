@@ -1,0 +1,166 @@
+{
+    "substations": [
+        {
+            "id": 1,
+            "name": "Weregenu",
+            "location": "Central I",
+            "voltage_level": "132kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "132kV Tap Kaliti I-Cotobie Line",
+                    "type": "Transmission",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "Line Circuit Breaker",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Line Isolator",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 3,
+                            "name": "132kV Line Bus Bar disconnector",
+                            "type": "Disconnect Switch",
+                            "specifications": "Bus bar disconnector for incoming line",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Earthing Switch",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": [
+                        {
+                            "id": 1,
+                            "name": "132kV Tap Kaliti I-Cotobie bay protection",
+                            "type": "Protection Relay",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "132kV Tap Kaliti I-Cotobie bay control panel",
+                            "type": "Control Panel",
+                            "specifications": "Very old ",
+                            "status": "OK"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "132/15kV Power Transformer 1",
+                    "type": "Transformer",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "TR1 CB",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "132/15kV TR1 BB Disconnector",
+                            "type": "Circuit Breaker",
+                            "specifications": "TR1 disonnector",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 3,
+                            "name": "132/15kV Transformer",
+                            "type": "Transformer",
+                            "specifications": "The physical transformer and its accessories ",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 3,
+                    "name": "132/15kV Power Transformer 2",
+                    "type": "Transformer",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Kaliti 1",
+            "location": "Central III",
+            "voltage_level": "230kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "230kV Gelan Line 1",
+                    "type": "Transmission",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "230kV Gelan Line 1 CB",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "Failed"
+                        },
+                        {
+                            "id": 2,
+                            "name": "230kV Gelan Line 1 CT",
+                            "type": "Busbar",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": [
+                        {
+                            "id": 1,
+                            "name": "230kV Gelan Line 1 CB",
+                            "type": "Control Panel",
+                            "specifications": "Circuit Breaker control and monitoring ",
+                            "status": "Failed"
+                        },
+                        {
+                            "id": 2,
+                            "name": "230kV Gelan Line 1 Metering",
+                            "type": "Metering Device",
+                            "specifications": "Metering for all P,Q,I,V",
+                            "status": "OK"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "230kV Gelan Line 2",
+                    "type": "Transmission",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Suluta",
+            "location": "Central III",
+            "voltage_level": "400kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "230kV Gefersa Line 1",
+                    "type": "Transmission",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                }
+            ]
+        }
+    ]
+}
