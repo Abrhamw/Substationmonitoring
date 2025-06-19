@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: substation-monitoring-system
+    env: python
+    plan: free
+    region: oregon  # Choose your preferred region
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.13
+      - key: PYTHONUNBUFFERED
+        value: 1
