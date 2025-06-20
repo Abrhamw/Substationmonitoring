@@ -1,58 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Substation Monitoring System</title>
+    <title>EEP Substation Monitoring</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         :root {
-            --eep-primary: #00843D;
-            --eep-secondary: #E30613;
+            --eep-primary: #00843D;  /* EEP Green */
+            --eep-secondary: #E30613; /* EEP Red */
             --eep-light: #F0F7F4;
             --eep-dark: #1A3C2F;
             --card-radius: 12px;
+            --transition: all 0.3s ease;
         }
         
         body {
-            background-color: var(--eep-light);
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #333;
+            overflow-x: hidden;
         }
         
         .eep-header {
             background: linear-gradient(135deg, var(--eep-primary), var(--eep-dark));
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             color: white;
-            padding: 1rem 0;
+            padding: 15px 0;
         }
         
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.15);
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
         .card {
             border-radius: var(--card-radius);
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: var(--transition);
             border: none;
             margin-bottom: 1.5rem;
+            overflow: hidden;
+            background: white;
         }
         
         .card:hover {
@@ -61,27 +55,28 @@
         }
         
         .card-header {
-            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
             background: linear-gradient(135deg, var(--eep-primary), var(--eep-dark));
             color: white;
             font-weight: 600;
             padding: 1rem 1.5rem;
+            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
         }
         
-        .health-gauge {
-            height: 20px;
-            border-radius: 10px;
+        .health-indicator {
+            height: 10px;
+            border-radius: 5px;
             overflow: hidden;
             background: #e9ecef;
         }
         
-        .health-gauge div {
+        .health-progress {
             height: 100%;
-            transition: width 0.5s ease-in-out;
+            transition: width 1s ease;
         }
         
         .critical-item {
             animation: pulse 1.5s infinite;
+            border-left: 4px solid var(--eep-secondary);
         }
         
         @keyframes pulse {
@@ -94,6 +89,7 @@
             padding: 5px 12px;
             border-radius: 20px;
             font-weight: 500;
+            transition: var(--transition);
         }
         
         .status-ok {
@@ -106,108 +102,177 @@
             color: #E30613;
         }
         
-        .health-score {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .tab-content {
+            transition: opacity 0.3s ease;
         }
         
-        .progress {
-            height: 12px;
-            border-radius: 6px;
-            background: #e9ecef;
+        .tab-pane {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
         }
         
-        .equipment-card {
+        .tab-pane.active {
+            opacity: 1;
+            height: auto;
+            overflow: visible;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background-color: var(--eep-primary);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        .data-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(0, 132, 61, 0.05);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            margin-right: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
         }
         
-        .equipment-card:hover {
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-        
-        .action-btn {
-            transition: transform 0.2s;
-        }
-        
-        .action-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .critical-table-row {
-            border-left: 4px solid var(--eep-secondary);
-        }
-        
-        .btn-eep {
+        .tab-btn.active {
             background: var(--eep-primary);
             color: white;
-            border: none;
-            transition: background 0.3s;
+            border-color: var(--eep-primary);
         }
         
-        .btn-eep:hover {
-            background: #006b31;
-            color: white;
+        .tab-btn:hover:not(.active) {
+            background: #f0f7f4;
         }
         
-        .btn-eep-danger {
+        .device-card {
+            border-left: 3px solid transparent;
+            transition: var(--transition);
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .device-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .device-card.failed {
+            border-left-color: var(--eep-secondary);
+        }
+        
+        .device-card.ok {
+            border-left-color: var(--eep-primary);
+        }
+        
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .grid-item {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .severity-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .severity-high {
             background: var(--eep-secondary);
             color: white;
-            border: none;
         }
         
-        .btn-eep-danger:hover {
-            background: #c10711;
-            color: white;
+        .severity-medium {
+            background: #ffc107;
+            color: #333;
         }
         
-        .eep-badge {
+        .severity-low {
             background: var(--eep-primary);
             color: white;
         }
         
-        footer {
-            background: var(--eep-dark);
-            color: white;
-            padding: 2rem 0;
-            margin-top: 3rem;
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
         }
         
-        .health-progress {
-            border-radius: 4px;
-            height: 8px;
+        .stat-ok {
+            color: var(--eep-primary);
         }
         
-        .chart-container {
-            position: relative;
+        .stat-failed {
+            color: var(--eep-secondary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .search-filter {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            margin-bottom: 20px;
             width: 100%;
-            height: 200px;
+            max-width: 400px;
+            transition: var(--transition);
         }
         
-        @media (max-width: 768px) {
-            .health-score {
-                font-size: 2rem;
-            }
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
-            .card {
-                margin-bottom: 1rem;
-            }
-			/* Add this new rule at the end of your style block */
-.tab-content > .tab-pane {
-    color: #000;
-}
-
-/* Or be more specific if needed */
-#switchyard, #controlroom {
-    color: #000;
-}
-
-/* Make sure text elements within cards also maintain black color */
-.card, .card-body, .card-title, .card-text {
-    color: #000;
-}
+        .search-filter:focus {
+            border-color: var(--eep-primary);
+            box-shadow: 0 0 0 3px rgba(0, 132, 61, 0.2);
+            outline: none;
         }
     </style>
 </head>
@@ -233,6 +298,10 @@
                         </a>
                     </li>
                 </ul>
+            </div>
+			            <br><div class="text-end">
+                <span class="badge bg-light text-dark">Live</span>
+                <div id="current-time" class="small mt-1">{{ current_time }}</div>
             </div>
         </div>
     </nav>

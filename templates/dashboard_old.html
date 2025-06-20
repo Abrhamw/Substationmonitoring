@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    /* Add view switcher styles */
+    .view-switcher {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    
+    @media (max-width: 768px) {
+        .view-switcher {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin-top: 10px;
+            text-align: right;
+        }
+    }
+</style>
+
+<div class="view-switcher">
+    <div class="btn-group" role="group">
+        <a href="/?view=new" class="btn btn-sm btn-outline-primary">New View</a>
+        <a href="/?view=old" class="btn btn-sm btn-primary">Old View</a>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+    <span class="text-muted">Last Updated: {{ current_time }}</span>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">System Health Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="health-score text-{{ 'success' if system_health > 80 else 'warning' if system_health > 60 else 'danger' }}">{{ system_health }}%</h2>
+                    <span class="badge bg-{{ 'success' if system_health > 80 else 'warning' if system_health > 60 else 'danger' }} status-badge">
+                        {{ system_health }}%
+                    </span>
+                </div>
+                <div class="health-gauge mb-3" data-score="{{ system_health }}"></div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ system_status.substation_count }}</h3>
+                                <p class="text-muted mb-0">Substations</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ system_status.bay_count }}</h3>
+                                <p class="text-muted mb-0">Bays</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ system_status.switchyard_equipment_count }}</h3>
+                                <p class="text-muted mb-0">Switchyard</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0">{{ system_status.control_room_equipment_count }}</h3>
+                                <p class="text-muted mb-0">Control Room</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Critical Alerts</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Failed Equipment:</span>
+                    <span class="fw-bold text-danger">{{ system_status.switchyard_failed + system_status.control_room_failed }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Critical Substations:</span>
+                    <span class="fw-bold text-danger">{{ system_status.critical_count }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('add_substation') }}" class="btn btn-eep w-100 mb-2">
+                    <i class="fas fa-plus-circle me-2"></i>Add Substation
+                </a>
+                <a href="{{ url_for('substations') }}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-list me-2"></i>View All Substations
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Critical Substations</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Substation</th>
+                                <th>Location</th>
+                                <th>Health</th>
+                                <th>Failed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for substation in critical_substations %}
+                            <tr class="{% if substation.health_score < 60 %}critical-item{% endif %}">
+                                <td>
+                                    <a href="{{ url_for('substation_detail', substation_id=substation.id) }}" class="text-decoration-none">
+                                        <i class="fas fa-chevron-right text-primary me-2"></i>{{ substation.name }}
+                                    </a>
+                                </td>
+                                <td>{{ substation.location }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="health-gauge me-2" style="width: 80px; height: 8px;" data-score="{{ substation.health_score }}"></div>
+                                        <span>{{ substation.health_score }}%</span>
+                                    </div>
+                                </td>
+                                <td class="text-danger">{{ substation.failed_count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No critical substations found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Failed Devices</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Equipment</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device in failed_devices %}
+                            <tr class="critical-table-row">
+                                <td>
+                                    <i class="fas fa-{{ 'bolt' if device.type in ['Circuit Breaker', 'Disconnect Switch', 'Transformer', 'Busbar', 'Lightning Arrester'] else 'microchip' }} text-danger me-2"></i>
+                                    {{ device.equipment }}
+                                </td>
+                                <td>{{ device.type }}</td>
+                                <td>{{ device.substation }} (Bay {{ device.bay }})</td>
+                                <td>
+                                    <a href="{{ url_for('substation_detail', substation_id=device.substation_id) }}" class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No failed devices found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Equipment Status Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="equipmentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Substation Health Trends</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="healthTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Equipment Status Chart
+        fetch('/api/equipment_health_stats')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('equipmentChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Switchyard', 'Control Room'],
+                        datasets: [
+                            {
+                                label: 'Operational',
+                                data: [data.switchyard.ok, data.control_room.ok],
+                                backgroundColor: '#28a745',
+                                borderColor: '#28a745',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Failed',
+                                data: [data.switchyard.failed, data.control_room.failed],
+                                backgroundColor: '#dc3545',
+                                borderColor: '#dc3545',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Count' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Equipment Type' }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'top' }
+                        }
+                    }
+                });
+            });
+
+        // Substation Health Trend Chart
+        fetch('/api/substation_health')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('healthTrendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(s => s.name),
+                        datasets: [{
+                            label: 'Health Score (%)',
+                            data: data.map(s => s.health_score),
+                            backgroundColor: data.map(s => s.health_score > 80 ? '#28a745' : s.health_score > 60 ? '#ffc107' : '#dc3545'),
+                            borderColor: data.map(s => s.health_score > 80 ? '#28a745' : s.health_score > 60 ? '#ffc107' : '#dc3545'),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: { display: true, text: 'Health Score (%)' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Substations' }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'top' }
+                        }
+                    }
+                });
+            });
+    });
+</script>
+{% endblock %}
+{% endblock %}
