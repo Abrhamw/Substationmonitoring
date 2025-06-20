@@ -611,9 +611,9 @@
                             <thead>
                                 <tr>
                                     <th>Substation</th>
+									<th>Bay</th>
 									<th>Device</th>
                                     <th>Type</th>
-                                    <th>Bay</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -621,6 +621,7 @@
                                 {% for device in stats.all_devices %}
                                 <tr class="fade-in {% if device.status == 'Failed' %}critical-item{% endif %}">
                                     <td>{{ device.substation }}</td>
+									<td>{{ device.bay }}</td>
 									<td>
                                         <i class="fas fa-{{ 'bolt' if device.type in ['Circuit Breaker', 'Disconnect Switch'] 
                                             else 'microchip' if device.type in ['Protection Relay', 'Control Panel'] 
@@ -629,7 +630,6 @@
                                         <strong>{{ device.equipment }}</strong>
                                     </td>
                                     <td>{{ device.type }}</td>
-                                    <td>{{ device.bay }}</td>
                                     <td>
                                         <span class="status-badge {% if device.status == 'Failed' %}status-failed{% else %}status-ok{% endif %}">
                                             {{ device.status }}

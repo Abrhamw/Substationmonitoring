@@ -21,18 +21,29 @@
                 {% if equipment_type == 'switchyard_equipment' %}
                 <select class="form-select" name="type" required>
                     <option value="Circuit Breaker">Circuit Breaker</option>
-                    <option value="Disconnect Switch">Disconnect Switch</option>
-                    <option value="Transformer">Transformer</option>
+                    <option value="Disconnect Switch">Disconnector Switch</option>
+					<option value="Transformer">Current Transformer(CT)</option>
+					<option value="Transformer">Voltage Transformer(VT)</option>
+                    <option value="Transformer">Auto Transformer</option>
+					<option value="Transformer">Power Transformer</option>
+					<option value="Transformer">Reactor</option>
+					<option value="Transformer">Capacitor</option>
                     <option value="Busbar">Busbar</option>
-                    <option value="Lightning Arrester">Lightning Arrester</option>
+                    <option value="Lightning Arrester">Earthing Switch</option>
                 </select>
                 {% else %}
                 <select class="form-select" name="type" required>
+				    <option value="Control Panel">Control Panel (Control/Status)</option>
                     <option value="Protection Relay">Protection Relay</option>
+					<option value="Protection Relay">Automatic Voltage Regulator (AVR)</option>
                     <option value="SCADA System">SCADA System</option>
                     <option value="Metering Device">Metering Device</option>
-                    <option value="Control Panel">Control Panel</option>
-                    <option value="Communication Device">Communication Device</option>
+                    <option value="Control Panel">Alarm Announciator</option>
+					<option value="Control Panel">125VDC Rectifier</option>
+					<option value="Control Panel">125VDC Battery System</option>
+					<option value="Control Panel">48VDC Rectifier</option>
+					<option value="Control Panel">48VDC Battery System</option>
+                    <option value="Communication Device">Voice system</option>
                 </select>
                 {% endif %}
                 <small class="form-text text-muted">Select the equipment type</small>

@@ -2,17 +2,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    /* Ensure text remains black in all tab states */
-    .tab-content .tab-pane {
-        color: #000 !important;
-    }
-    
-    /* Override Bootstrap's faded text for inactive tabs */
-    .tab-pane {
-        opacity: 1 !important;
-    }
-</style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -131,7 +120,7 @@
                     <h5>No bays found</h5>
                     <p class="text-muted">Add your bay to get started</p>
                     <a href="{{ url_for('add_bay', substation_id=substation.id) }}" class="btn btn-eep">
-                        <i class="fas fa-plus-circle me-2"></i>Add Bay
+                        <i class="fas fa-plus-circle me-2"></i>Add Bayxxx
                     </a>
                 </div>
                 {% endif %}
@@ -142,29 +131,33 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Equipment</h5>
+        <h5 class="mb-0">Primary Device and Secondary Equipment</h5>
         <div>
-            <button class="btn btn-sm btn-eep me-2" data-bs-toggle="modal" data-bs-target="#addSwitchyardModal">
-                <i class="fas fa-bolt me-1"></i>Add Switchyard
-            </button>
             <button class="btn btn-sm btn-eep" data-bs-toggle="modal" data-bs-target="#addControlRoomModal">
-                <i class="fas fa-microchip me-1"></i>Add Control Room
+                <i class="fas fa-plus me-1"></i>Add Control Room (Secondary Equipment)
+            </button>
+            <button class="btn btn-sm btn-eep" data-bs-toggle="modal" data-bs-target="#addSwitchyardModal">
+                <i class="fas fa-plus me-1"></i>Add Switchyard (Primary Device)
             </button>
         </div>
     </div>
     <div class="card-body">
-        <ul class="nav nav-tabs mb-4" id="equipmentTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="tab-content" id="switchyard-tab" data-bs-toggle="tab" data-bs-target="#switchyard" type="button" role="tab">
-                    <i class="fas fa-bolt me-2"></i>Switchyard Equipment
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="tab-pane" id="controlroom-tab" data-bs-toggle="tab" data-bs-target="#controlroom" type="button" role="tab">
-                    <i class="fas fa-microchip me-2"></i>Control Room Devices
-                </button>
-            </li>
-        </ul>
+<ul class="nav nav-tabs mb-4" id="equipmentTab" role="tablist">
+    
+    <li class="nav-item" role="presentation">
+        <button class="tab-btn active" id="controlroom-tab" data-bs-toggle="tab" data-bs-target="#controlroom" type="button" role="tab" aria-selected="true">
+            <i class="fas fa-microchip me-2"></i>Control Room Equipment
+        </button>
+    </li>
+    
+ 
+    <li class="nav-item" role="presentation">
+        <button class="tab-btn" id="switchyard-tab" data-bs-toggle="tab" data-bs-target="#switchyard" type="button" role="tab" aria-selected="true">
+            <i class="fas fa-bolt me-2"></i>Switchyard Device
+        </button>
+    </li>
+
+</ul>
         
         <div class="tab-content" id="equipmentTabContent">
             <div class="tab-pane fade show active" id="switchyard" role="tabpanel">	
@@ -221,10 +214,10 @@
                 {% if not has_switchyard %}
                 <div class="text-center py-4">
                     <i class="fas fa-bolt fa-3x text-muted mb-3"></i>
-                    <h5>No switchyard equipment</h5>
-                    <p class="text-muted">Add your switchyard equipment</p>
+                    <h5>Switchyard device</h5>
+                    <p class="text-muted">Add your switchyard device</p>
                     <button class="btn btn-eep" data-bs-toggle="modal" data-bs-target="#addSwitchyardModal">
-                        <i class="fas fa-plus-circle me-2"></i>Add Equipment
+                        <i class="fas fa-plus-circle me-2"></i>Add Device
                     </button>
                 </div>
                 {% endif %}
@@ -284,10 +277,10 @@
                 {% if not has_controlroom %}
                 <div class="text-center py-4">
                     <i class="fas fa-microchip fa-3x text-muted mb-3"></i>
-                    <h5>No control room devices</h5>
-                    <p class="text-muted">Add your control room device</p>
+                    <h5>Control room equipment</h5>
+                    <p class="text-muted">Add your control room equipment</p>
                     <button class="btn btn-eep" data-bs-toggle="modal" data-bs-target="#addControlRoomModal">
-                        <i class="fas fa-plus-circle me-2"></i>Add Device
+                        <i class="fas fa-plus-circle me-2"></i>Add Equipment
                     </button>
                 </div>
                 {% endif %}
@@ -300,7 +293,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Switchyard Equipment</h5>
+                <h5 class="modal-title">Add Switchyard Device</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -333,7 +326,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Control Room Device</h5>
+                <h5 class="modal-title">Add Control Room Equipment</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">

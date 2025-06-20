@@ -1,15 +1,85 @@
 import os
 import json
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from datetime import datetime
 from flask import jsonify
+from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key_here')
+app.config['SESSION_TYPE'] = 'filesystem'
 
 # File paths
 DATA_FILE = 'substation_data.db'
+AUDIT_LOG = 'audit_log.db'
+USER_FILE = 'users.db'
 
+# Initialize data files
+def initialize_files():
+    """Create data files with default structure if they don't exist"""
+    # Main data file
+    if not os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'w') as f:
+            json.dump({"substations": []}, f, indent=4)
+    
+    # Audit log
+    if not os.path.exists(AUDIT_LOG):
+        with open(AUDIT_LOG, 'w') as f:
+            json.dump({"logs": []}, f, indent=4)
+    
+    # User credentials (demo users)
+    if not os.path.exists(USER_FILE):
+        with open(USER_FILE, 'w') as f:
+            users = {
+                "admin": {"password": "admin123", "role": "admin"},
+                "operator": {"password": "operator123", "role": "operator"}
+            }
+            json.dump(users, f, indent=4)
+
+# User authentication and authorization
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            flash('Please log in to access this page', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'role' not in session or session['role'] != 'admin':
+            flash('Admin privileges required for this action', 'danger')
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def log_audit(action, details):
+    """Log user actions for auditing"""
+    try:
+        if not os.path.exists(AUDIT_LOG):
+            initialize_files()
+            
+        with open(AUDIT_LOG, 'r') as f:
+            data = json.load(f)
+            
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "user": session.get('username', 'unknown'),
+            "action": action,
+            "details": details
+        }
+        
+        data["logs"].append(log_entry)
+        
+        with open(AUDIT_LOG, 'w') as f:
+            json.dump(data, f, indent=4)
+            
+    except Exception as e:
+        print(f"Audit log error: {str(e)}")
+
+# Data handling functions (load_data, save_data, get_stats, get_detailed_stats remain mostly the same)
 def initialize_data_file():
     """Create data file with default structure if it doesn't exist"""
     if not os.path.exists(DATA_FILE):
@@ -194,31 +264,57 @@ def get_detailed_stats():
         "location_failures": location_failures,
         "device_ratings": device_ratings
     }
-
+initialize_files()
 initialize_data_file()
 
+# Authentication routes
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        try:
+            with open(USER_FILE, 'r') as f:
+                users = json.load(f)
+                
+            if username in users and users[username]['password'] == password:
+                session['username'] = username
+                session['role'] = users[username]['role']
+                flash('Login successful!', 'success')
+                log_audit("login", f"User {username} logged in")
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Invalid username or password', 'danger')
+                
+        except Exception as e:
+            flash(f'Error accessing user database: {str(e)}', 'danger')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    username = session.get('username', 'unknown')
+    session.clear()
+    log_audit("logout", f"User {username} logged out")
+    flash('You have been logged out', 'success')
+    return redirect(url_for('login'))
+
 @app.route('/')
+#@login_required
 def dashboard():
     view = request.args.get('view', 'new')  # Default to new view
     detailed_stats = get_detailed_stats()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    if view == 'old':
-        # For old dashboard, we need to prepare the critical_substations
-        critical_substations = sorted(detailed_stats["substations_health"], 
-                                     key=lambda x: x["health_score"])[:3]
-        return render_template('dashboard_old.html', 
-                               current_time=current_time,
-                               system_status=get_stats(),
-                               system_health=detailed_stats["system_health"],
-                               critical_substations=critical_substations,
-                               failed_devices=detailed_stats["failed_devices"][:5])
-    else:
-        return render_template('dashboard_new.html', 
-                               current_time=current_time,
-                               stats=detailed_stats)
+    #detailed_stats['current_user'] = {
+    #    'username': session['username'],
+     #   'role': session['role']
+    #}
+    return render_template('dashboard_new.html', current_time=current_time, stats=detailed_stats)
+
 
 @app.route('/substations')
+@login_required
 def substations():
     data = load_data()
     for substation in data["substations"]:
@@ -235,9 +331,10 @@ def substations():
         health_score = max(0, 100 - (total_failed / total_equipment * 100)) if total_equipment > 0 else 100
         substation["health_score"] = round(health_score, 1)
     
-    return render_template('substations.html', substations=data["substations"])
+    return render_template('substations.html', substations=data["substations"], is_admin=(session['role'] == 'admin'))
 
 @app.route('/substation/<int:substation_id>')
+@login_required
 def substation_detail(substation_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -271,6 +368,8 @@ def substation_detail(substation_id):
                            total_equipment=total_equipment)
 
 @app.route('/add_substation', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_substation():
     if request.method == 'POST':
         data = load_data()
@@ -292,6 +391,8 @@ def add_substation():
     return render_template('add_substation.html')
 
 @app.route('/substation/<int:substation_id>/add_bay', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_bay(substation_id):
     if request.method == 'POST':
         data = load_data()
@@ -318,6 +419,8 @@ def add_bay(substation_id):
     return render_template('add_bay.html', substation_id=substation_id)
 
 @app.route('/substation/<int:substation_id>/bay/<int:bay_id>/add_equipment', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_equipment(substation_id, bay_id):
     valid_equipment_types = ['switchyard_equipment', 'control_room_devices']
     
@@ -363,6 +466,8 @@ def add_equipment(substation_id, bay_id):
                               equipment_type=equipment_type)
 
 @app.route('/update_status', methods=['POST'])
+@login_required
+@admin_required
 def update_status():
     valid_equipment_types = ['switchyard_equipment', 'control_room_devices']
     
@@ -398,6 +503,7 @@ def update_status():
     return redirect(url_for('substation_detail', substation_id=substation_id))
 
 @app.route('/api/failed_devices')
+@login_required
 def get_failed_devices():
     data = load_data()
     failed_devices = []
@@ -430,6 +536,7 @@ def get_failed_devices():
     return jsonify(failed_devices)
 
 @app.route('/api/substation_health')
+@login_required
 def get_substation_health():
     data = load_data()
     health_data = []
@@ -460,14 +567,29 @@ def get_substation_health():
     return jsonify(health_data)
 
 @app.route('/delete_substation/<int:substation_id>', methods=['POST'])
+@login_required
+@admin_required
 def delete_substation(substation_id):
-    data = load_data()
-    data["substations"] = [s for s in data["substations"] if s["id"] != substation_id]
-    save_data(data)
-    flash("Substation deleted successfully!", "success")
+    try:
+        data = load_data()
+        substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
+        
+        if substation:
+            data["substations"] = [s for s in data["substations"] if s["id"] != substation_id]
+            save_data(data)
+            log_audit("delete_substation", f"Deleted substation {substation['name']} (ID: {substation_id})")
+            flash("Substation deleted successfully!", "success")
+        else:
+            flash("Substation not found", "danger")
+            
+    except Exception as e:
+        flash(f"Error deleting substation: {str(e)}", "danger")
+    
     return redirect(url_for('substations'))
 
 @app.route('/delete_bay/<int:substation_id>/<int:bay_id>', methods=['POST'])
+@login_required
+@admin_required
 def delete_bay(substation_id, bay_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -478,6 +600,8 @@ def delete_bay(substation_id, bay_id):
     return redirect(url_for('substation_detail', substation_id=substation_id))
 
 @app.route('/delete_equipment/<int:substation_id>/<int:bay_id>/<equipment_type>/<int:equipment_id>', methods=['POST'])
+@login_required
+@admin_required
 def delete_equipment(substation_id, bay_id, equipment_type, equipment_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -490,6 +614,8 @@ def delete_equipment(substation_id, bay_id, equipment_type, equipment_id):
     return redirect(url_for('substation_detail', substation_id=substation_id))
 
 @app.route('/edit_substation/<int:substation_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit_substation(substation_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -509,6 +635,8 @@ def edit_substation(substation_id):
     return render_template('edit_substation.html', substation=substation)
 
 @app.route('/edit_bay/<int:substation_id>/<int:bay_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit_bay(substation_id, bay_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -531,6 +659,8 @@ def edit_bay(substation_id, bay_id):
     return render_template('edit_bay.html', substation_id=substation_id, bay=bay)
 
 @app.route('/edit_equipment/<int:substation_id>/<int:bay_id>/<equipment_type>/<int:equipment_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit_equipment(substation_id, bay_id, equipment_type, equipment_id):
     data = load_data()
     substation = next((s for s in data["substations"] if s["id"] == substation_id), None)
@@ -563,6 +693,7 @@ def edit_equipment(substation_id, bay_id, equipment_type, equipment_id):
                           equipment=equipment)
 
 @app.route('/api/equipment_health_stats')
+@login_required
 def get_equipment_health_stats():
     data = load_data()
     stats = {

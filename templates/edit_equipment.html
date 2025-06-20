@@ -16,27 +16,38 @@
                 <input type="text" class="form-control" name="name" value="{{ equipment.name }}" required>
                 <small class="form-text text-muted">Update the equipment name</small>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Type</label>
-                {% if equipment_type == 'switchyard_equipment' %}
-                <select class="form-select" name="type" required>
-                    <option value="Circuit Breaker" {{ 'selected' if equipment.type == 'Circuit Breaker' }}>Circuit Breaker</option>
-                    <option value="Disconnect Switch" {{ 'selected' if equipment.type == 'Disconnect Switch' }}>Disconnect Switch</option>
-                    <option value="Transformer" {{ 'selected' if equipment.type == 'Transformer' }}>Transformer</option>
-                    <option value="Busbar" {{ 'selected' if equipment.type == 'Busbar' }}>Busbar</option>
-                    <option value="Lightning Arrester" {{ 'selected' if equipment.type == 'Lightning Arrester' }}>Lightning Arrester</option>
-                </select>
-                {% else %}
-                <select class="form-select" name="type" required>
-                    <option value="Protection Relay" {{ 'selected' if equipment.type == 'Protection Relay' }}>Protection Relay</option>
-                    <option value="SCADA System" {{ 'selected' if equipment.type == 'SCADA System' }}>SCADA System</option>
-                    <option value="Metering Device" {{ 'selected' if equipment.type == 'Metering Device' }}>Metering Device</option>
-                    <option value="Control Panel" {{ 'selected' if equipment.type == 'Control Panel' }}>Control Panel</option>
-                    <option value="Communication Device" {{ 'selected' if equipment.type == 'Communication Device' }}>Communication Device</option>
-                </select>
-                {% endif %}
-                <small class="form-text text-muted">Select the equipment type</small>
-            </div>
+<div class="mb-3">
+    <label class="form-label">Type</label>
+    {% if equipment_type == 'switchyard_equipment' %}
+    <select class="form-select" name="type" required>
+        <option value="Circuit Breaker" {{ 'selected' if equipment.type == 'Circuit Breaker' }}>Circuit Breaker</option>
+        <option value="Disconnect Switch" {{ 'selected' if equipment.type == 'Disconnect Switch' }}>Disconnect Switch</option>
+        <option value="Current Transformer" {{ 'selected' if equipment.type == 'Current Transformer' }}>Current Transformer (CT)</option>
+        <option value="Voltage Transformer" {{ 'selected' if equipment.type == 'Voltage Transformer' }}>Voltage Transformer (VT)</option>
+        <option value="Auto Transformer" {{ 'selected' if equipment.type == 'Auto Transformer' }}>Auto Transformer</option>
+        <option value="Power Transformer" {{ 'selected' if equipment.type == 'Power Transformer' }}>Power Transformer</option>
+        <option value="Reactor" {{ 'selected' if equipment.type == 'Reactor' }}>Reactor</option>
+        <option value="Capacitor" {{ 'selected' if equipment.type == 'Capacitor' }}>Capacitor</option>
+        <option value="Busbar" {{ 'selected' if equipment.type == 'Busbar' }}>Busbar</option>
+        <option value="Earthing Switch" {{ 'selected' if equipment.type == 'Earthing Switch' }}>Earthing Switch</option>
+    </select>
+    {% else %}
+    <select class="form-select" name="type" required>
+        <option value="Control Panel" {{ 'selected' if equipment.type == 'Control Panel' }}>Control Panel (Control/Status)</option>
+        <option value="Protection Relay" {{ 'selected' if equipment.type == 'Protection Relay' }}>Protection Relay</option>
+        <option value="Automatic Voltage Regulator" {{ 'selected' if equipment.type == 'Automatic Voltage Regulator' }}>Automatic Voltage Regulator (AVR)</option>
+        <option value="SCADA System" {{ 'selected' if equipment.type == 'SCADA System' }}>SCADA System</option>
+        <option value="Metering Device" {{ 'selected' if equipment.type == 'Metering Device' }}>Metering Device</option>
+        <option value="Alarm Announciator" {{ 'selected' if equipment.type == 'Alarm Announciator' }}>Alarm Announciator</option>
+        <option value="125VDC Rectifier" {{ 'selected' if equipment.type == '125VDC Rectifier' }}>125VDC Rectifier</option>
+        <option value="125VDC Battery System" {{ 'selected' if equipment.type == '125VDC Battery System' }}>125VDC Battery System</option>
+        <option value="48VDC Rectifier" {{ 'selected' if equipment.type == '48VDC Rectifier' }}>48VDC Rectifier</option>
+        <option value="48VDC Battery System" {{ 'selected' if equipment.type == '48VDC Battery System' }}>48VDC Battery System</option>
+        <option value="Voice System" {{ 'selected' if equipment.type == 'Voice System' }}>Voice system</option>
+    </select>
+    {% endif %}
+    <small class="form-text text-muted">Select the equipment type</small>
+</div>
             <div class="mb-3">
                 <label class="form-label">Specifications</label>
                 <textarea class="form-control" name="specifications" rows="3">{{ equipment.specifications }}</textarea>

@@ -15,10 +15,14 @@
             <div class="mb-3">
                 <label class="form-label">Type</label>
                 <select class="form-select" name="type" required>
-                    <option value="Transmission" {{ 'selected' if bay.type == 'Transmission' }}>Transmission</option>
-                    <option value="Distribution" {{ 'selected' if bay.type == 'Distribution' }}>Distribution</option>
-                    <option value="Transformer" {{ 'selected' if bay.type == 'Transformer' }}>Transformer</option>
-                    <option value="Feeder" {{ 'selected' if bay.type == 'Feeder' }}>Feeder</option>
+					<option value="Station_Services_bay" {{ 'selected' if bay.type == 'Station_Services_bay' }}>Station Services Bay</option>
+                    <option value="Transmission_line_bay" {{ 'selected' if bay.type == 'Transmission_line_bay' }}>Transmission Line Bay</option>
+                    <option value="Transformer_Bay" {{ 'selected' if bay.type == 'Transformer_Bay' }}>Transformer Bay</option>
+                    <option value="Reactor_Bay" {{ 'selected' if bay.type == 'Reactor_Bay' }}>Reactor Bay</option>
+                    <option value="Capacitor_Bay" {{ 'selected' if bay.type == 'Capacitor_Bay' }}>Capacitor Bay</option>
+                    <option value="MV_Distribution_Bay" {{ 'selected' if bay.type == 'MV_Distribution_Bay' }}>MV Distribution Bay</option>
+                    <option value="Bus_Coupler_Bay" {{ 'selected' if bay.type == 'Bus_Coupler_Bay' }}>Bus Coupler Bay</option>
+                    <option value="SVC/SVG_Bay" {{ 'selected' if bay.type == 'SVC/SVG_Bay' }}>SVC/SVG Bay</option>			
                 </select>
                 <small class="form-text text-muted">Select the bay type</small>
             </div>
