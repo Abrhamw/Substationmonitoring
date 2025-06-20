@@ -37,7 +37,7 @@
                             "name": "Earthing Switch",
                             "type": "Disconnect Switch",
                             "specifications": "",
-                            "status": "Failed"
+                            "status": "OK"
                         }
                     ],
                     "control_room_devices": [
@@ -74,7 +74,7 @@
                             "name": "132/15kV TR1 BB Disconnector",
                             "type": "Circuit Breaker",
                             "specifications": "TR1 disonnector",
-                            "status": "Failed"
+                            "status": "OK"
                         },
                         {
                             "id": 3,
@@ -92,6 +92,28 @@
                     "type": "Transformer",
                     "switchyard_equipment": [],
                     "control_room_devices": []
+                },
+                {
+                    "id": 4,
+                    "name": "Station Services ",
+                    "type": "Station_Services_bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": [
+                        {
+                            "id": 1,
+                            "name": "Local SCADA",
+                            "type": "SCADA System",
+                            "specifications": "",
+                            "status": "Failed"
+                        },
+                        {
+                            "id": 2,
+                            "name": "125VDC Rectifier",
+                            "type": "125VDC Battery System",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ]
                 }
             ]
         },
@@ -110,7 +132,7 @@
                             "id": 1,
                             "name": "230kV Gelan Line 1 CB",
                             "type": "Circuit Breaker",
-                            "specifications": "",
+                            "specifications": "the CB sf6 gas is very low, the motor has failed, mechanical damage, it is recommended to change the cb",
                             "status": "Failed"
                         },
                         {
@@ -186,8 +208,197 @@
                             "type": "Disconnect Switch",
                             "specifications": "",
                             "status": "Failed"
+                        },
+                        {
+                            "id": 3,
+                            "name": "230kV kaliti 1 Line 1 BB3",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "OK"
                         }
                     ],
+                    "control_room_devices": []
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Addis East I",
+            "location": "Central I",
+            "voltage_level": "132kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "Station Services ",
+                    "type": "Station_Services_bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": [
+                        {
+                            "id": 1,
+                            "name": "Local Sacad",
+                            "type": "SCADA System",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "125VDC Rectifier",
+                            "type": "Control Panel",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "132kV Cotobie Line 1",
+                    "type": "Transmission_line_bay",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "132kV Cotobie Line 1 CB",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "132kV Cotobie Line 1 BB1",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 3,
+                    "name": "132kV Cotobie Line 2",
+                    "type": "Transmission_line_bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 4,
+                    "name": "132/15kV Power transformer-1",
+                    "type": "Transformer_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 5,
+                    "name": "132/15kV Power transformer-2",
+                    "type": "Transformer_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 6,
+                    "name": "132kV Bus coupler",
+                    "type": "Bus_Coupler_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 7,
+                    "name": "132kV Bus Bar 1",
+                    "type": "Bus_Coupler_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 8,
+                    "name": "132kV Bus Bar 2",
+                    "type": "Bus_Coupler_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Ayat GIS",
+            "location": "Central I",
+            "voltage_level": "132kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "Station Services ",
+                    "type": "Station_Services_bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": [
+                        {
+                            "id": 1,
+                            "name": "Local Scada",
+                            "type": "SCADA System",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "125VDC Rectifier",
+                            "type": "Control Panel",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 3,
+                            "name": "125VDC Battery",
+                            "type": "Control Panel",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "132kV Cotobie Line 1",
+                    "type": "Transmission_line_bay",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "132/15kV Power transformer-1 CB",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 3,
+                    "name": "132kV Legetafo Line 1",
+                    "type": "Transmission_line_bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 4,
+                    "name": "132/15kV Power transformer-1",
+                    "type": "Transformer_Bay",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "132/15kV Power transformer-1 BB1",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "OK"
+                        }
+                    ],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 5,
+                    "name": "132/15kV Power transformer-2",
+                    "type": "Transformer_Bay",
+                    "switchyard_equipment": [],
+                    "control_room_devices": []
+                },
+                {
+                    "id": 6,
+                    "name": "132kV Bus coupler",
+                    "type": "Bus_Coupler_Bay",
+                    "switchyard_equipment": [],
                     "control_room_devices": []
                 }
             ]
