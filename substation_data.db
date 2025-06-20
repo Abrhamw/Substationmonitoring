@@ -16,7 +16,7 @@
                             "name": "Line Circuit Breaker",
                             "type": "Circuit Breaker",
                             "specifications": "",
-                            "status": "OK"
+                            "status": "Failed"
                         },
                         {
                             "id": 2,
@@ -37,7 +37,7 @@
                             "name": "Earthing Switch",
                             "type": "Disconnect Switch",
                             "specifications": "",
-                            "status": "OK"
+                            "status": "Failed"
                         }
                     ],
                     "control_room_devices": [
@@ -74,7 +74,7 @@
                             "name": "132/15kV TR1 BB Disconnector",
                             "type": "Circuit Breaker",
                             "specifications": "TR1 disonnector",
-                            "status": "OK"
+                            "status": "Failed"
                         },
                         {
                             "id": 3,
@@ -158,6 +158,36 @@
                     "name": "230kV Gefersa Line 1",
                     "type": "Transmission",
                     "switchyard_equipment": [],
+                    "control_room_devices": []
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "Legetafo",
+            "location": "Central III",
+            "voltage_level": "230kV",
+            "bays": [
+                {
+                    "id": 1,
+                    "name": "230kV Kaliti 1 Line 1",
+                    "type": "Transmission",
+                    "switchyard_equipment": [
+                        {
+                            "id": 1,
+                            "name": "230kV kaliti 1 Line 1 CB",
+                            "type": "Circuit Breaker",
+                            "specifications": "",
+                            "status": "OK"
+                        },
+                        {
+                            "id": 2,
+                            "name": "230kV kaliti 1 Line 1 BB1",
+                            "type": "Disconnect Switch",
+                            "specifications": "",
+                            "status": "Failed"
+                        }
+                    ],
                     "control_room_devices": []
                 }
             ]
