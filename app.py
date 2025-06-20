@@ -31,7 +31,11 @@ def initialize_files():
     if not os.path.exists(USER_FILE):
         with open(USER_FILE, 'w') as f:
             users = {
-                "admin": {"password": "admin123", "role": "admin"},
+                "admin": {"password": "admin@123#", "role": "admin"},
+                "Hundie": {"password": "Hundie@123", "role": "admin"},
+                "Abrham": {"password": "Abrham", "role": "admin"},
+                "OT": {"password": "OT@123", "role": "admin"},
+                "Andualem": {"password": "Andualem", "role": "admin"},
                 "operator": {"password": "operator123", "role": "operator"}
             }
             json.dump(users, f, indent=4)
